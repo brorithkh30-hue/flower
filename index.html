@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sopheavy Flower - 100 Flower Catalog & Price Directory</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #9e2a2b;
+            --primary-light: #c8553d;
+            --accent: #d4a373;
+            --accent-soft: #fefae0;
+            --bg-light: #fdfbf7;
+            --surface: #ffffff;
+            --text-dark: #2b2d42;
+            --text-muted: #6c757d;
+            --border: #e9ecef;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.1);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
+
+        /* Top Bar */
+        .announcement-bar {
+            background-color: var(--primary);
+            color: #fff;
+            text-align: center;
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--surface);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo span { color: var(--accent); font-style: italic; font-weight: 400; }
+
+        .nav-links { display: flex; list-style: none; gap: 24px; }
+        .nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 22px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary { background-color: var(--primary); color: #fff; }
+        .btn-primary:hover { background-color: var(--primary-light); transform: translateY(-2px); }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                        url('https://images.unsplash.com/photo-1507290439931-a861b5a38200?w=1600&q=80') center/cover no-repeat;
+            padding: 70px 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .hero h1 { font-size: 3rem; margin-bottom: 12px; }
+        .hero p { font-size: 1.15rem; opacity: 0.95; max-width: 700px; margin: 0 auto 24px; }
+
+        /* Search & Filter Bar */
+        .search-section {
+            max-width: 1200px;
+            margin: -30px auto 40px;
+            padding: 0 24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-box-wrapper {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus { border-color: var(--primary); }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .tab-btn {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-light);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* Product Grid */
+        .catalog-container {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 0 24px;
+        }
+
+        .catalog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .results-count {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            color: var(--text-dark);
+            margin: 4px 0 6px;
+        }
+
+        .card-type {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .card-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+        }
+
+        /* Order Form */
+        .order-section {
+            background: var(--surface);
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .order-section { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+
+        .order-info h3 { font-size: 2rem; color: var(--primary); margin-bottom: 12px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px; }
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-dark);
+            color: #ccc;
+            text-align: center;
+            padding: 30px 24px;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="announcement-bar">
+        🌸 Sopheavy Flower Complete 100-Flower Directory | Use code <strong>SOPHEAVY100</strong> for 15% OFF 🌸
+    </div>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">Sopheavy <span>Flower</span></a>
+            <ul class="nav-links">
+                <li><a href="#catalog">100 Flowers Catalog</a></li>
+                <li><a href="#order">Place Order</a></li>
+            </ul>
+            <a href="#order" class="btn btn-primary">Order Now</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Sopheavy Flower 100 Varieties Catalog</h1>
+        <p>Explore our complete list of 100 fresh, vibrant flowers with pricing, classifications, and pictures for every occasion.</p>
+    </section>
+
+    <!-- Search & Filter Bar -->
+    <div class="search-section">
+        <div class="search-box-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search among 100 flowers (e.g. Red Rose, Orchid, Sunflower, Lily...)" onkeyup="filterFlowers()">
+            
+            <div class="filter-tabs">
+                <button class="tab-btn active" onclick="setCategory('All', this)">All 100 Flowers</button>
+                <button class="tab-btn" onclick="setCategory('Roses & Classic', this)">Roses & Classic (15)</button>
+                <button class="tab-btn" onclick="setCategory('Orchids & Tropical', this)">Orchids & Tropical (15)</button>
+                <button class="tab-btn" onclick="setCategory('Lilies & Bulbs', this)">Lilies & Bulbs (15)</button>
+                <button class="tab-btn" onclick="setCategory('Sun-Loving & Bright', this)">Sun-Loving & Bright (15)</button>
+                <button class="tab-btn" onclick="setCategory('Fragrant & Garden', this)">Fragrant & Garden (15)</button>
+                <button class="tab-btn" onclick="setCategory('Wildflowers & Fillers', this)">Wildflowers & Fillers (15)</button>
+                <button class="tab-btn" onclick="setCategory('Cottage & Specialty', this)">Cottage & Specialty (10)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Catalog Section -->
+    <section class="catalog-container" id="catalog">
+        <div class="catalog-header">
+            <h2>Flower Directory</h2>
+            <div class="results-count" id="resultsCount">Showing 100 flowers</div>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+            <!-- Dynamically populated via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Order Section -->
+    <section class="order-section" id="order">
+        <div class="order-info">
+            <h3>Place Your Order</h3>
+            <p>Select any flower from the 100 varieties listed above or contact Sopheavy Flower directly for custom arrangements!</p>
+            <br>
+            <p><strong>📍 Shop Address:</strong> #128 Flower Street, BKK1, Phnom Penh, Cambodia</p>
+            <p><strong>📞 Phone / Telegram:</strong> +855 12 345 678 / +855 98 765 432</p>
+            <p><strong>⏰ Hours:</strong> Monday - Sunday: 7:00 AM - 8:00 PM</p>
+        </div>
+
+        <form onsubmit="handleOrderSubmit(event)">
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" class="form-control" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label>Phone / Telegram Number</label>
+                <input type="tel" class="form-control" placeholder="e.g. 012 345 678" required>
+            </div>
+            <div class="form-group">
+                <label>Selected Flower Variety</label>
+                <select id="flowerSelect" class="form-control" required>
+                    <!-- Populated via JS -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Delivery Address & Notes</label>
+                <textarea class="form-control" rows="3" placeholder="Recipient address, greeting card message..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Submit Order</button>
+        </form>
+    </section>
+
+    <footer>
+        &copy; 2026 Sopheavy Flower Shop. All 100 Flowers Catalog & Rights Reserved.
+    </footer>
+
+    <script>
+        const flowerData = [
+            {"name": "Red Rose", "category": "Roses & Classic", "price": 45, "type": "Fresh Stem / Bouquet", "img": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80"},
+            {"name": "White Rose", "category": "Roses & Classic", "price": 45, "type": "Fresh Stem / Bouquet", "img": "https://images.unsplash.com/photo-1533616688419-b7a585564566?w=500&q=80"},
+            {"name": "Pink Rose", "category": "Roses & Classic", "price": 42, "type": "Fresh Stem / Bouquet", "img": "https://images.unsplash.com/photo-1559563458-527698bf5295?w=500&q=80"},
+            {"name": "Yellow Rose", "category": "Roses & Classic", "price": 40, "type": "Fresh Stem / Bouquet", "img": "https://images.unsplash.com/photo-1548695607-9c73430ba065?w=500&q=80"},
+            {"name": "Spray Rose", "category": "Roses & Classic", "price": 38, "type": "Miniature Clusters", "img": "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=500&q=80"},
+            {"name": "Peony", "category": "Roses & Classic", "price": 65, "type": "Luxury Seasonal Bloom", "img": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=500&q=80"},
+            {"name": "Carnation", "category": "Roses & Classic", "price": 25, "type": "Long-Lasting Cut", "img": "https://images.unsplash.com/photo-1589217157232-4a452df3137b?w=500&q=80"},
+            {"name": "Ranunculus", "category": "Roses & Classic", "price": 48, "type": "Layered Petals", "img": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=500&q=80"},
+            {"name": "Anemone", "category": "Roses & Classic", "price": 42, "type": "Black-Eyed Bloom", "img": "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=500&q=80"},
+            {"name": "Lisianthus", "category": "Roses & Classic", "price": 35, "type": "Rose-Like Elegance", "img": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=500&q=80"},
+            {"name": "Gardenia", "category": "Roses & Classic", "price": 50, "type": "Fragrant Potted Bloom", "img": "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=80"},
+            {"name": "Camellia", "category": "Roses & Classic", "price": 45, "type": "Garden Shrub Bloom", "img": "https://images.unsplash.com/photo-1507290439931-a861b5a38200?w=500&q=80"},
+            {"name": "Sweet Pea", "category": "Roses & Classic", "price": 30, "type": "Delicate Scented Stem", "img": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&q=80"},
+            {"name": "Dahlia", "category": "Roses & Classic", "price": 55, "type": "Showstopping Geometry", "img": "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=500&q=80"},
+            {"name": "Tulip", "category": "Roses & Classic", "price": 40, "type": "Dutch Imported Spring", "img": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=500&q=80"},
+            {"name": "Phalaenopsis Orchid", "category": "Orchids & Tropical", "price": 55, "type": "Ceramic Pot Plant", "img": "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=80"},
+            {"name": "Cymbidium Orchid", "category": "Orchids & Tropical", "price": 60, "type": "Tall Floral Spike", "img": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=500&q=80"},
+            {"name": "Dendrobium Orchid", "category": "Orchids & Tropical", "price": 35, "type": "Fresh Spray Bunch", "img": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80"},
+            {"name": "Vanda Orchid", "category": "Orchids & Tropical", "price": 70, "type": "Hanging Purple Exotic", "img": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=500&q=80"},
+            {"name": "Cattleya Orchid", "category": "Orchids & Tropical", "price": 65, "type": "Corsage Queen", "img": "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=500&q=80"},
+            {"name": "Bird of Paradise", "category": "Orchids & Tropical", "price": 50, "type": "Architectural Tropical", "img": "https://images.unsplash.com/photo-1507290439931-a861b5a38200?w=500&q=80"},
+            {"name": "Anthurium", "category": "Orchids & Tropical", "price": 38, "type": "Heart-Shaped Glossy", "img": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&q=80"},
+            {"name": "Heliconia", "category": "Orchids & Tropical", "price": 45, "type": "Exotic Hanging Lobster", "img": "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=500&q=80"},
+            {"name": "Pink Ginger Flower", "category": "Orchids & Tropical", "price": 30, "type": "Tropical Cone Bloom", "img": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=500&q=80"},
+            {"name": "Plumeria (Frangipani)", "category": "Orchids & Tropical", "price": 25, "type": "Sweet Tropical Scent", "img": "https://images.unsplash.com/photo-1533616688419-b7a585564566?w=500&q=80"},
+            {"name": "Bougainvillea", "category": "Orchids & Tropical", "price": 20, "type": "Vibrant Bract Spray", "img": "https://images.unsplash.com/photo-1559563458-527698bf5295?w=500&q=80"},
+            {"name": "Hibiscus", "category": "Orchids & Tropical", "price": 22, "type": "Island Garden Bloom", "img": "https://images.unsplash.com/photo-1548695607-9c73430ba065?w=500&q=80"},
+            {"name": "Passion Flower", "category": "Orchids & Tropical", "price": 40, "type": "Intricate Vine Bloom", "img": "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=500&q=80"},
+            {"name": "King Protea", "category": "Orchids & Tropical", "price": 85, "type": "South African Luxury Stem", "img": "https://images.unsplash.com/photo-1589217157232-4a452df3137b?w=500&q=80"},
+            {"name": "Ixora", "category": "Orchids & Tropical", "price": 18, "type": "Dense Cluster Bloom", "img": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=500&q=80"},
+            {"name": "Oriental Casablanca Lily", "category": "Lilies & Bulbs", "price": 50, "type": "Fragrant White Stem", "img": "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=500&q=80"},
+            {"name": "Asiatic Lily", "category": "Lilies & Bulbs", "price": 38, "type": "Unscented Bright Colors", "img": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&q=80"},
+            {"name": "Canna Lily", "category": "Lilies & Bulbs", "price": 28, "type": "Tropical Garden Foliage", "img": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=500&q=80"},
+            {"name": "Stargazer Lily", "category": "Lilies & Bulbs", "price": 52, "type": "Vibrant Pink & White", "img": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=500&q=80"},
+            {"name": "Calla Lily", "category": "Lilies & Bulbs", "price": 48, "type": "Sleek Modern Trumpet", "img": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80"},
+            {"name": "Water Lily", "category": "Lilies & Bulbs", "price": 35, "type": "Aquatic Floating Flower", "img": "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=500&q=80"},
+            {"name": "Lotus", "category": "Lilies & Bulbs", "price": 40, "type": "Sacred Sacred Bloom", "img": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=500&q=80"},
+            {"name": "Amaryllis", "category": "Lilies & Bulbs", "price": 45, "type": "Holiday Giant Bulb", "img": "https://images.unsplash.com/photo-1533616688419-b7a585564566?w=500&q=80"},
+            {"name": "Daffodil (Narcissus)", "category": "Lilies & Bulbs", "price": 25, "type": "Spring Yellow Trumpet", "img": "https://images.unsplash.com/photo-1559563458-527698bf5295?w=500&q=80"},
+            {"name": "Hyacinth", "category": "Lilies & Bulbs", "price": 30, "type": "Intensely Sweet Spike", "img": "https://images.unsplash.com/photo-1548695607-9c73430ba065?w=500&q=80"},
+            {"name": "Crocus", "category": "Lilies & Bulbs", "price": 20, "type": "Early Spring Bulb", "img": "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=500&q=80"},
+            {"name": "Freesia", "category": "Lilies & Bulbs", "price": 32, "type": "Citrus-Scented Stems", "img": "https://images.unsplash.com/photo-1589217157232-4a452df3137b?w=500&q=80"},
+            {"name": "Dutch Iris", "category": "Lilies & Bulbs", "price": 28, "type": "Royal Blue Elegance", "img": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=500&q=80"},
+            {"name": "Agapanthus", "category": "Lilies & Bulbs", "price": 42, "type": "Lily of the Nile Globe", "img": "https://images.unsplash.com/photo-1507290439931-a861b5a38200?w=500&q=80"},
+            {"name": "Ornamental Allium", "category": "Lilies & Bulbs", "price": 36, "type": "Purple Globe Flower", "img": "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=80"},
+            {"name": "Sunflower", "category": "Sun-Loving & Bright", "price": 38, "type": "Vibrant Yellow Giant", "img": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&q=80"},
+            {"name": "Marigold", "category": "Sun-Loving & Bright", "price": 15, "type": "Golden Festival Flower", "img": "https://images.unsplash.com/photo-1548695607-9c73430ba065?w=500&q=80"},
+            {"name": "Gerbera Daisy", "category": "Sun-Loving & Bright", "price": 30, "type": "Colorful Playful Daisy", "img": "https://images.unsplash.com/photo-1589217157232-4a452df3137b?w=500&q=80"},
+            {"name": "Shasta Daisy", "category": "Sun-Loving & Bright", "price": 22, "type": "Classic White & Gold", "img": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=500&q=80"},
+            {"name": "African Daisy", "category": "Sun-Loving & Bright", "price": 24, "type": "Osteospermum Sun Bloom", "img": "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=500&q=80"},
+            {"name": "Zinnia", "category": "Sun-Loving & Bright", "price": 20, "type": "Vibrant Rainbow Garden", "img": "https://images.unsplash.com/photo-1559563458-527698bf5295?w=500&q=80"},
+            {"name": "Cosmos", "category": "Sun-Loving & Bright", "price": 18, "type": "Feathery Delicate Stems", "img": "https://images.unsplash.com/photo-1533616688419-b7a585564566?w=500&q=80"},
+            {"name": "Chrysanthemum", "category": "Sun-Loving & Bright", "price": 28, "type": "Full Cushion Bloom", "img": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80"},
+            {"name": "Calendula", "category": "Sun-Loving & Bright", "price": 16, "type": "Medicinal Pot Marigold", "img": "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=500&q=80"},
+            {"name": "Coreopsis", "category": "Sun-Loving & Bright", "price": 18, "type": "Tickseed Bright Yellow", "img": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=500&q=80"},
+            {"name": "Black-Eyed Susan", "category": "Sun-Loving & Bright", "price": 22, "type": "Rudbeckia Native Flower", "img": "https://images.unsplash.com/photo-1507290439931-a861b5a38200?w=500&q=80"},
+            {"name": "Purple Coneflower", "category": "Sun-Loving & Bright", "price": 25, "type": "Echinacea Herbal Bloom", "img": "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=80"},
+            {"name": "Blanket Flower", "category": "Sun-Loving & Bright", "price": 20, "type": "Gaillardia Bi-color", "img": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=500&q=80"},
+            {"name": "Celosia (Cockscomb)", "category": "Sun-Loving & Bright", "price": 26, "type": "Velvet Crested Plume", "img": "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=500&q=80"},
+            {"name": "Globe Amaranth", "category": "Sun-Loving & Bright", "price": 18, "type": "Everlasting Clover-Like", "img": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=500&q=80"},
+            {"name": "Jasmine (Mogra)", "category": "Fragrant & Garden", "price": 25, "type": "Sweet Night Fragrance", "img": "https://images.unsplash.com/photo-1533616688419-b7a585564566?w=500&q=80"},
+            {"name": "Night-Blooming Jasmine", "category": "Fragrant & Garden", "price": 28, "type": "Intense Evening Aroma", "img": "https://images.unsplash.com/photo-1559563458-527698bf5295?w=500&q=80"},
+            {"name": "English Lavender", "category": "Fragrant & Garden", "price": 32, "type": "Calming Purple Spike", "img": "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=500&q=80"},
+            {"name": "Tuberose", "category": "Fragrant & Garden", "price": 35, "type": "Rich Perfume Cut Stem", "img": "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=500&q=80"},
+            {"name": "Hydrangea", "category": "Fragrant & Garden", "price": 48, "type": "Voluminous Cloud Bloom", "img": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=500&q=80"},
+            {"name": "Magnolia", "category": "Fragrant & Garden", "price": 55, "type": "Creamy Luxury Tree Blossom", "img": "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=80"},
+            {"name": "Lilac", "category": "Fragrant & Garden", "price": 42, "type": "Vintage Spring Cluster", "img": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=500&q=80"},
+            {"name": "Wisteria", "category": "Fragrant & Garden", "price": 60, "type": "Cascading Purple Vine", "img": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80"},
+            {"name": "Azalea", "category": "Fragrant & Garden", "price": 30, "type": "Shade Garden Shrub", "img": "https://images.unsplash.com/photo-1507290439931-a861b5a38200?w=500&q=80"},
+            {"name": "Rhododendron", "category": "Fragrant & Garden", "price": 35, "type": "Large Mountain Cluster", "img": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&q=80"},
+            {"name": "Fuchsia", "category": "Fragrant & Garden", "price": 24, "type": "Hanging Teardrop Bell", "img": "https://images.unsplash.com/photo-1548695607-9c73430ba065?w=500&q=80"},
+            {"name": "Begonia", "category": "Fragrant & Garden", "price": 20, "type": "Potted Shade Favorite", "img": "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=500&q=80"},
+            {"name": "Impatiens", "category": "Fragrant & Garden", "price": 18, "type": "Busy Lizzie Bedding", "img": "https://images.unsplash.com/photo-1589217157232-4a452df3137b?w=500&q=80"},
+            {"name": "Geranium", "category": "Fragrant & Garden", "price": 22, "type": "Classic Balcony Flower", "img": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=500&q=80"},
+            {"name": "Petunia", "category": "Fragrant & Garden", "price": 18, "type": "Trumpet Hanging Basket", "img": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=500&q=80"},
+            {"name": "Baby's Breath", "category": "Wildflowers & Fillers", "price": 20, "type": "Classic Cloud Filler", "img": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80"},
+            {"name": "Statice", "category": "Wildflowers & Fillers", "price": 18, "type": "Paper-Textured Everlasting", "img": "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=500&q=80"},
+            {"name": "Waxflower", "category": "Wildflowers & Fillers", "price": 24, "type": "Aromatic Australian Filler", "img": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=500&q=80"},
+            {"name": "Stock (Matthiola)", "category": "Wildflowers & Fillers", "price": 32, "type": "Clove-Scented Floral Spire", "img": "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=500&q=80"},
+            {"name": "Snapdragon", "category": "Wildflowers & Fillers", "price": 30, "type": "Tall Structural Spire", "img": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=500&q=80"},
+            {"name": "Delphinium", "category": "Wildflowers & Fillers", "price": 45, "type": "Deep Royal Blue Tower", "img": "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=80"},
+            {"name": "Larkspur", "category": "Wildflowers & Fillers", "price": 35, "type": "Wild Cottage Spire", "img": "https://images.unsplash.com/photo-1507290439931-a861b5a38200?w=500&q=80"},
+            {"name": "Foxglove", "category": "Wildflowers & Fillers", "price": 38, "type": "Bell-Shaped Spire", "img": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&q=80"},
+            {"name": "Bluebell", "category": "Wildflowers & Fillers", "price": 25, "type": "Woodland Spring Bell", "img": "https://images.unsplash.com/photo-1548695607-9c73430ba065?w=500&q=80"},
+            {"name": "Forget-Me-Not", "category": "Wildflowers & Fillers", "price": 20, "type": "Tiny Sky-Blue Clusters", "img": "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=500&q=80"},
+            {"name": "Cornflower", "category": "Wildflowers & Fillers", "price": 18, "type": "Bachelor's Button Blue", "img": "https://images.unsplash.com/photo-1589217157232-4a452df3137b?w=500&q=80"},
+            {"name": "Queen Anne's Lace", "category": "Wildflowers & Fillers", "price": 22, "type": "Intricate Umbrella Lace", "img": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=500&q=80"},
+            {"name": "Sea Holly (Eryngium)", "category": "Wildflowers & Fillers", "price": 34, "type": "Metallic Blue Thistle", "img": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=500&q=80"},
+            {"name": "Yarrow (Achillea)", "category": "Wildflowers & Fillers", "price": 20, "type": "Flat-Topped Wild Cluster", "img": "https://images.unsplash.com/photo-1533616688419-b7a585564566?w=500&q=80"},
+            {"name": "Aster", "category": "Wildflowers & Fillers", "price": 25, "type": "Autumn Star-Like Daisy", "img": "https://images.unsplash.com/photo-1559563458-527698bf5295?w=500&q=80"},
+            {"name": "Hollyhock", "category": "Cottage & Specialty", "price": 28, "type": "Old-Fashioned Garden Tower", "img": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80"},
+            {"name": "Nasturtium", "category": "Cottage & Specialty", "price": 16, "type": "Edible Bright Flower", "img": "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=500&q=80"},
+            {"name": "Cyclamen", "category": "Cottage & Specialty", "price": 24, "type": "Butterfly-Like Potted", "img": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=500&q=80"},
+            {"name": "Morning Glory", "category": "Cottage & Specialty", "price": 18, "type": "Dawn-Opening Trumpet Vine", "img": "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=500&q=80"},
+            {"name": "Crown Imperial", "category": "Cottage & Specialty", "price": 50, "type": "Dramatic Pendant Bell", "img": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=500&q=80"},
+            {"name": "Sweet William", "category": "Cottage & Specialty", "price": 22, "type": "Bicolor Fragrant Dianthus", "img": "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=80"},
+            {"name": "Verbena", "category": "Cottage & Specialty", "price": 18, "type": "Purple Butterfly Magnet", "img": "https://images.unsplash.com/photo-1507290439931-a861b5a38200?w=500&q=80"},
+            {"name": "Salvia", "category": "Cottage & Specialty", "price": 20, "type": "Vibrant Red/Blue Spire", "img": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&q=80"},
+            {"name": "Scabiosa (Pincushion)", "category": "Cottage & Specialty", "price": 32, "type": "Textured Whimsical Bloom", "img": "https://images.unsplash.com/photo-1548695607-9c73430ba065?w=500&q=80"},
+            {"name": "Dried Pampas Grass", "category": "Cottage & Specialty", "price": 35, "type": "Everlasting Boho Plume", "img": "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=500&q=80"}
+        ];
+
+        let currentCategory = 'All';
+
+        function renderFlowers() {
+            const grid = document.getElementById('productGrid');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const selectEl = document.getElementById('flowerSelect');
+            
+            grid.innerHTML = '';
+            let count = 0;
+            
+            if (selectEl.options.length === 0) {
+                flowerData.forEach(f => {
+                    const opt = document.createElement('option');
+                    opt.value = f.name + ' ($' + f.price + '.00)';
+                    opt.textContent = f.name + ' - $' + f.price + '.00 (' + f.category + ')';
+                    selectEl.appendChild(opt);
+                });
+            }
+
+            flowerData.forEach(flower => {
+                const matchesCategory = currentCategory === 'All' || flower.category === currentCategory;
+                const matchesSearch = flower.name.toLowerCase().includes(searchVal) || 
+                                      flower.type.toLowerCase().includes(searchVal) || 
+                                      flower.category.toLowerCase().includes(searchVal);
+
+                if (matchesCategory && matchesSearch) {
+                    count++;
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <img src="${flower.img}" alt="${flower.name}" class="card-img" loading="lazy">
+                        <div class="card-body">
+                            <span class="card-category">${flower.category}</span>
+                            <h3 class="card-title">${flower.name}</h3>
+                            <div class="card-type">${flower.type}</div>
+                            <div class="card-footer">
+                                <span class="card-price">$${flower.price}.00</span>
+                                <button class="btn btn-primary btn-sm" onclick="selectForOrder('${flower.name}')">Select</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+
+            document.getElementById('resultsCount').textContent = `Showing ${count} of 100 flowers`;
+        }
+
+        function setCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderFlowers();
+        }
+
+        function filterFlowers() {
+            renderFlowers();
+        }
+
+        function selectForOrder(flowerName) {
+            const selectEl = document.getElementById('flowerSelect');
+            for (let i = 0; i < selectEl.options.length; i++) {
+                if (selectEl.options[i].value.includes(flowerName)) {
+                    selectEl.selectedIndex = i;
+                    break;
+                }
+            }
+            document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function handleOrderSubmit(e) {
+            e.preventDefault();
+            alert("Thank you for your order request with Sopheavy Flower! We will contact you shortly.");
+        }
+
+        renderFlowers();
+    </script>
+</body>
+</html>
